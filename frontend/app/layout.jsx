@@ -1,8 +1,8 @@
-import "./globals.css";
+import './globals.css';
 
 export const metadata = {
-  title: "Bees & Bears - Loan Management",
-  description: "Solar panel installer loan management system",
+  title: 'Bees & Bears - Loan Management',
+  description: 'Solar panel installer loan management system',
 };
 
 export default function RootLayout({ children }) {

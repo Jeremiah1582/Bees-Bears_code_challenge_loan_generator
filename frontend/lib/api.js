@@ -1,53 +1,127 @@
 import axios from 'axios';
-const API_BASE_URL = 'http://localhost:8000/api';
 
-// get all partners
-export async function fetchPartners() {
-  const response = await axios.get(`${API_BASE_URL}/partners/`);
-  if (response.status !== 200) {
-    throw new Error('Failed to fetch partners');
+// Base URL for API - can be overridden with environment variable
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+
+// Create axios instance with default config
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// ============================================
+// PARTNER API FUNCTIONS
+// ============================================
+
+/**Get all partners */
+export async function getPartners() {
+  try {
+    const response = await apiClient.get('/partners/');
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || 'Failed to fetch partners');
   }
-  return response.data; 
 }
 
-// get customers for a partner
-export async function fetchPartnerCustomers(partnerId) {
-  const response = await axios.get(`${API_BASE_URL}/partners/${partnerId}/customers/`);
-  console.log(response.data);
-  if (response.status !== 200) {
-    throw new Error('Failed to fetch customers');
+/** Get customers for a specific partner */
+export async function getPartnerCustomers(partnerId) {
+  try {
+    const response = await apiClient.get(`/partners/${partnerId}/customers/`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || 'Failed to fetch customers');
   }
-  return response.data;
 }
 
-// Create customer for a partner
-export async function createCustomerForPartner(partnerId, customerData) {
-  const response = await fetch(`${API_BASE_URL}/partners/${partnerId}/customers/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(customerData),
-  });
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Failed to create customer');
+/**Create a customer for a partner */
+export async function createPartnerCustomer(partnerId, customerData) {
+  try {
+    const response = await apiClient.post(`/partners/${partnerId}/customers/`, customerData);
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.detail || 
+                        Object.values(error.response?.data || {}).flat().join(', ') ||
+                        'Failed to create customer';
+    throw new Error(errorMessage);
   }
-  return response.json();
 }
 
-// Create loan offer for a customer
+// ============================================
+// CUSTOMER API FUNCTIONS
+// ============================================
+
+/**
+ * Get all customers */
+export async function getCustomers() {
+  try {
+    const response = await apiClient.get('/customers/');
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || 'Failed to fetch customers');
+  }
+}
+
+/**
+ * Create a new customer
+ * @param {Object} customerData - Customer data
+ * @returns {Promise} Created customer object
+ */
+export async function createCustomer(customerData) {
+  try {
+    const response = await apiClient.post('/customers/', customerData);
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.detail || 
+                        Object.values(error.response?.data || {}).flat().join(', ') ||
+                        'Failed to create customer';
+    throw new Error(errorMessage);
+  }
+}
+
+/**
+ * Get loan offers for a customer
+ * @param {number} customerId - Customer ID
+ * @returns {Promise} List of loan offers
+ */
+export async function getCustomerLoanOffers(customerId) {
+  try {
+    const response = await apiClient.get(`/customers/${customerId}/loanoffers/`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || 'Failed to fetch loan offers');
+  }
+}
+
+// ============================================
+// LOAN OFFER API FUNCTIONS
+// ============================================
+
+/**
+ * Get all loan offers
+ * @returns {Promise} List of all loan offers
+ */
+export async function getLoanOffers() {
+  try {
+    const response = await apiClient.get('/loanoffers/');
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || 'Failed to fetch loan offers');
+  }
+}
+
+/**
+  Create a new loan offer
+  @param {Object} loanData - Loan offer data (customer, loan_amount, interest_rate, term_months)
+  @returns {Promise} Created loanoffer object
+ */
 export async function createLoanOffer(loanData) {
-  const response = await fetch(`${API_BASE_URL}/loanoffers/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(loanData),
-  });
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Failed to create loan offer');
+  try {
+    const response = await apiClient.post('/loanoffers/', loanData);
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.detail;
+    throw new Error(errorMessage);
   }
-  return response.json();
 }
