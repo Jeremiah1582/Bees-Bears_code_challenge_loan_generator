@@ -3,7 +3,19 @@ from rest_framework import serializers
 
 
 class LoanSerializer(serializers.ModelSerializer): 
-    monthly_payments= serializers.DecimalField(source="monthly_payments", max_digits=10,decimal_places=2, read_only=True) #amount the borrower needs to pay back each month during the loan term
+    monthly_payments = serializers.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        read_only=True
+    )
+    # Allow 'interest_rate' as an alias for 'annual_rate' in API
+    interest_rate = serializers.DecimalField(
+      
+        max_digits=4,
+        decimal_places=2,
+        required=False,
+        write_only=True
+    )
 
     class Meta:
         model = Loan
@@ -12,6 +24,7 @@ class LoanSerializer(serializers.ModelSerializer):
             'customer',
             'loan_amount',
             'annual_rate',
+            'interest_rate',  # Alias for annual_rate in API
             'term_months',
             'monthly_payments',
             'created_at',
@@ -20,8 +33,6 @@ class LoanSerializer(serializers.ModelSerializer):
         
         read_only_fields = (   
             'id',
-            'customer',
-            'annual_rate',
             'created_at',
             'updated_at'
             )

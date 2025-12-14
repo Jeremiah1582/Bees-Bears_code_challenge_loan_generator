@@ -18,18 +18,16 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from partners.views import PartnerViewSet
- 
-router = DefaultRouter()
-router.register(r'partners', PartnerViewSet, basename='partner')    
+from customers.views import CustomerViewSet
+from loans.views import LoanOfferViewSet
+# Add this temporarily for debugging
 
+router = DefaultRouter()
+router.register(r'partners', PartnerViewSet, basename='partner')
+router.register(r'customers', CustomerViewSet, basename='customer')
+router.register(r'loanoffers', LoanOfferViewSet, basename='loanoffer')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path(f'api/partners/{id}/customers', PartnerViewSet.as_view({'get': 'get_customer_by_id'}), name='get_customer_by_id'),
-    path(f'api/partners/{id}/customers', PartnerViewSet.as_view({'post': 'create_customer'}), name='create_customer'),
-    path(f'api/partners/{id}/customers', PartnerViewSet.as_view({'put': 'update_customer'}), name='update_customer'),
-    path(f'api/partners/{id}/customers', PartnerViewSet.as_view({'delete': 'delete_customer'}), name='delete_customer'),
+    path('api/', include(router.urls)),
 ]
-
-
-

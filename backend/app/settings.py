@@ -25,7 +25,10 @@ SECRET_KEY = 'django-insecure-)lhbn+l6z0aq*w1d7s$dvv3p)6=419pgnp)q$1tk1z9n6^7sfd
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+# For production, replace the above with your actual production domain(s).
 
 
 # Application definition
@@ -38,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "rest_framework",
+    "corsheaders",
 
     #Apps
     "loans",
@@ -47,6 +51,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -55,6 +60,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
 ]
+
+# CORS settings for frontend
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+
+
+
+# For development only - allow all origins
+# Remove this in production and use CORS_ALLOWED_ORIGINS above
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'app.urls'
 

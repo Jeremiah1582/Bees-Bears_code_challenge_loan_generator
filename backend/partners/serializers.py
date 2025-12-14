@@ -1,8 +1,5 @@
-
 from rest_framework import serializers
 from partners.models import Partner
-
-from loans.models import Loan
 
 class PartnerSerializer(serializers.ModelSerializer):
 

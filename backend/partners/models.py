@@ -25,11 +25,11 @@ class Partner(models.Model):
         return f"{self.company_name} {self.address}"
     
     def create_new_customer(self, **kwargs): 
+        """Create a new customer and associate it with this partner."""
         try:
-            newCustomer = Customer.objects.create(
-                **kwargs,
-                partner= self
-                )
+            newCustomer = Customer.objects.create(**kwargs)
+            # Add to ManyToMany relationship
+            self.customers.add(newCustomer)
             return newCustomer
         
         except IntegrityError as e:
@@ -40,21 +40,23 @@ class Partner(models.Model):
 
     #create select_loan_issue_date() function 
 
-    def create_customer_loan(self,customer_instance): 
+    def create_customer_loan(self, customer_instance, loan_amount=None, annual_rate=20, term_months=12): 
         """ 
-        get customers max loan amount, 
-        customer object is required to create a loan
+        Create a loan for a customer.
+        If loan_amount is not provided, uses customer's max_loan_amount.
         """
-        if not customer_instance.max_loan_amount() > 100:
+        if loan_amount is None:
+            loan_amount = customer_instance.max_loan_amount
+        
+        if not loan_amount > 100:
             return f"customer does not qualify for a loan"
         try:
             loan = Loan.objects.create(
                 customer=customer_instance,
-                loan_amount=customer_instance.max_loan_amount(),
-                annual_rate=20, 
-                term_months=12,
-                )
-
+                loan_amount=loan_amount,
+                annual_rate=annual_rate, 
+                term_months=term_months,
+            )
             return loan
         except IntegrityError as e:
             raise IntegrityError(f"there was an issue creating a customer loan {e}")

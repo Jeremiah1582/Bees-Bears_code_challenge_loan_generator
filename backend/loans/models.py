@@ -15,7 +15,7 @@ class Loan(models.Model):
     annual_rate= models.DecimalField(max_digits=4, decimal_places=2, default=20)
     term_months= models.IntegerField(null=True, default=12) #total duration over which the loan must be repaid
     #monthly_payments= models.DecimalField(max_digits=10,decimal_places=2) #amount the borrower needs to pay back each month during the loan term
-    issue_date= models.DateField(blank=True, null= True, default=date.today())
+    issue_date = models.DateField(blank=True, null=True, default=date.today)
     created_at= models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -37,10 +37,10 @@ class Loan(models.Model):
     def has_sufficient_income(self): 
         # is customers income x2 the loan amount? 
         try:
-            qualify= (self.customer.calc_annual_income()>= self.loan_amount*2)
+            qualify = (self.customer.annual_income >= self.loan_amount * 2)
             return qualify
         except TypeError:
-            print("there is a type error, please ensure input is valid,{TypeError}")
+            print("there is a type error, please ensure input is valid")
             return False
         
     # is customers creditscore good? 
@@ -54,7 +54,7 @@ class Loan(models.Model):
             return False
         
     def qualify_for_loan(self): 
-        if self.hass_sufficient_income() and self.has_good_credit():
+        if self.has_sufficient_income() and self.has_good_credit():
             return True
         else:
             return False 
@@ -62,19 +62,25 @@ class Loan(models.Model):
         
     @property
     def monthly_payments(self):
-        if self.qualify_for_loan():
-            try:
-                P = self.loan_amount
-                r = self.annual_rate / 12 / 100
-                n = self.term_months
-                M = P * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
-
-                return M 
-                
+        """Calculate monthly payment using standard amortization formula."""
+        try:
+            from decimal import Decimal
+            P = Decimal(str(self.loan_amount))
+            r = Decimal(str(self.annual_rate)) / Decimal('12') / Decimal('100')
+            n = Decimal(str(self.term_months))
             
-            except ZeroDivisionError:
-                return ZeroDivisionError.Decimal('0.00')
-        return None
+            if r == 0:
+                # If interest rate is 0, simply divide loan by term
+                return P / n
+            
+            # Standard amortization formula: M = P * (r * (1 + r)^n) / ((1 + r)^n - 1)
+            numerator = r * ((1 + r) ** n)
+            denominator = ((1 + r) ** n) - 1
+            M = P * (numerator / denominator)
+            
+            return M
+        except (ZeroDivisionError, ValueError, TypeError) as e:
+            return Decimal('0.00')
     
 
         

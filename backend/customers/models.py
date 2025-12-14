@@ -39,8 +39,8 @@ class Customer(models.Model):
 
     @property
     def max_loan_amount(self):
-        """Return integer maximum loan amount (50% of annual income)."""
-        return self.annual_income() /  2
+        """Return maximum loan amount (50% of annual income)."""
+        return self.annual_income / 2
     
 
     
