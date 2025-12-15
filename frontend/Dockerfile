@@ -1,4 +1,4 @@
-# Stage 1: Dependencies
+# Stage 1: Dependencies (Can be kept the same)
 FROM node:20-alpine AS deps
 
 WORKDIR /app
@@ -7,44 +7,45 @@ WORKDIR /app
 COPY package.json package-lock.json* ./
 
 # Install dependencies
-RUN npm ci
+# Using npm install is often simpler than npm ci for dev builds
+RUN npm install 
 
-# Stage 2: Builder
-FROM node:20-alpine AS builder
+# Stage 2: Builder (NOT needed for a simple dev setup! Can be removed for speed)
+# We will skip the 'npm run build' step and go straight to development.
+# If you remove this, you simplify the file significantly.
 
-WORKDIR /app
+# --- SIMPLIFIED DEVELOPMENT RUNNER STAGE ---
+# We'll use a single stage based on the 'deps' stage for speed and simplicity.
 
-# Copy dependencies from deps stage
-COPY --from=deps /app/node_modules ./node_modules
-
-# Copy project files
-COPY . .
-
-# Build Next.js application
-RUN npm run build
-
-# Stage 3: Runner
 FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-ENV NODE_ENV=production
+# Copy all files from the current directory (including source code)
+COPY . .
+
+# Copy installed node_modules from the 'deps' stage
+COPY --from=deps /app/node_modules ./node_modules
+
+# We do NOT run the build step (npm run build)
+
+# --- CRITICAL CHANGES FOR DEVELOPMENT ---
+# 1. Change NODE_ENV to development
+ENV NODE_ENV=development 
+# 2. Disable telemetry (good)
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# Create non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# Copy necessary files from builder
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
-
+# Expose port
 EXPOSE 3000
 
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"]
+# --- CRITICAL CHANGE: Use the Next.js development server command ---
+# This enables hot module replacement (HMR) for fast development.
+CMD ["npm", "run", "dev"]
+
+# --- Cleanup: Removed unused user setup as running as root is often simpler for dev
+# RUN addgroup --system --gid 1001 nodejs
+# RUN adduser --system --uid 1001 nextjs
+# USER nextjs

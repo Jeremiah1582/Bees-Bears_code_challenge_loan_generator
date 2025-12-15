@@ -7,6 +7,7 @@
 **Updated:** 14-12-2025
 
 A full-stack application for solar panel installers to create customers and generate loan offers with calculated monthly payments.
+This README.md file was AI generated. 
 
 ## Table of Contents
 
@@ -143,7 +144,7 @@ Before you begin, ensure you have the following installed:
 See [Docker Setup](#docker-setup) section below.
 
 ## Frontend Setup
-
+    
 ### Option 1: Local Development (Without Docker)
 
 1. **Navigate to frontend directory:**

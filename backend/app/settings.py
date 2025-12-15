@@ -1,3 +1,5 @@
+import os 
+
 """
 Django settings for app project.
 
@@ -10,6 +12,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+from multiprocessing import process
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,14 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)lhbn+l6z0aq*w1d7s$dvv3p)6=419pgnp)q$1tk1z9n6^7sfd'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'backend', '0.0.0.0']
-
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(',')
 # For production, replace the above with your actual production domain(s).
 
 
@@ -62,12 +64,7 @@ MIDDLEWARE = [
 ]
 
 # CORS settings for frontend
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
-
-
+CORS_ALLOWED_ORIGINS =os.environ.get('CORS_ALLOWED_ORIGINS').split(',')
 
 
 # For development only - allow all origins
