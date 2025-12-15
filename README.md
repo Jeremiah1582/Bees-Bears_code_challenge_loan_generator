@@ -1,6 +1,10 @@
-# Bees & Bears - Loan Management System
-**Created:** 2025-01-27  
-**Updated:** 2025-01-27
+
+// ============================================
+// # Bees & Bears Frontend
+// ============================================
+
+**Created:** 14-12-2025  
+**Updated:** 14-12-2025
 
 A full-stack application for solar panel installers to create customers and generate loan offers with calculated monthly payments.
 
