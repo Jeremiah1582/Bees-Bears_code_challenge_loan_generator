@@ -33,13 +33,14 @@ export async function createCustomerForPartner(partnerId, customerData) {
 }
 
 // Create loan offer for a customer
-export async function createLoanOffer(loanData) {
-  const response = await axios.post(`${API_BASE_URL}/loanoffers/`, {
+export async function createLoanOffer(customerId,loanData) {
+  const response = await axios.post(`${API_BASE_URL}/customers/${customerId}/loanoffers/`, {
     loanData
   });
-  if (response.status !== 200) {
+  if (response.status !== 201) {
     throw new Error('Failed to create loan offer');
   }
+  console.log("create loan offer response.data............", response.data);
   return response.data.loanData;
 }
 

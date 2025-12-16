@@ -25,7 +25,7 @@ export default function Home() {
   const [loanForm, setLoanForm] = useState({
     customer: '',
     loan_amount: '',
-    interest_rate: '',
+    annual_rate: '',
     term_months: '',
   });
 
@@ -112,15 +112,15 @@ export default function Home() {
       const loanData = {
         customer: parseInt(loanForm.customer),
         loan_amount: parseFloat(loanForm.loan_amount),
-        interest_rate: parseFloat(loanForm.interest_rate),
+        annual_rate: parseFloat(loanForm.annual_rate),
         term_months: parseInt(loanForm.term_months),
       };
-      const result = await createLoanOffer(loanData);
-      showMessage('success', `Loan offer created! Monthly payment: $${result.monthly_payments}`);
+      const result = await createLoanOffer(loanData.customer,loanData);
+      showMessage('success', `Loan offer created! Monthly payment: $${result}`);
       setLoanForm({
         customer: '',
         loan_amount: '',
-        interest_rate: '',
+        annual_rate: '',
         term_months: '',
       });
     } catch (error) {
@@ -298,8 +298,8 @@ export default function Home() {
                   min="0"
                   max="100"
                   required
-                  value={loanForm.interest_rate}
-                  onChange={(e) => setLoanForm({ ...loanForm, interest_rate: e.target.value })}
+                  value={loanForm.annual_rate}
+                  onChange={(e) => setLoanForm({ ...loanForm, annual_rate: e.target.value })}
                   className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>

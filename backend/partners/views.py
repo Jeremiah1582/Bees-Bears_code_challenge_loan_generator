@@ -126,42 +126,4 @@ class PartnerViewSet(viewsets.ModelViewSet):
             )
 
 
-    @action(detail=True, methods=['get', 'post'], url_path='customers/(?P<customer_id>[0-9]+)/loanoffers')
-    def loan_offers(self, request, customer_id=None, *args, **kwargs):
-        """Get all loan offers for a customer"""
-        if request.method == 'GET':
-            """Get all loan offers for a customer"""  
-            customer=self.get_object().customers.get(id=customer_id)
-            loans = customer.loans.all()
-        elif request.method == 'POST':
-            """Create a loan offer for a customer"""
-       
-            try:
-                print("request.data POST, create loan....", request.data)
-                partner = self.get_object()
-                customer = partner.customers.get(id=customer_id)
-            except Customer.DoesNotExist:
-                return Response(
-                    {'error': 'Customer not found for this partner'}, 
-                    status=status.HTTP_404_NOT_FOUND
-                )
-                
-            loan_data = request.data.copy()
-            loan_data['customer'] = customer.id
-            
-            serializer = LoanSerializer(data=loan_data)
-            if serializer.is_valid():
-                loan = serializer.save()
-                return Response(
-                    LoanSerializer(loan).data, 
-                    status=status.HTTP_201_CREATED
-                )
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-        
-        loans = Loan.objects.filter(customer=customer)
-        serializer = LoanSerializer(loans, many=True)
-        return Response(serializer.data)
-
-  
+    

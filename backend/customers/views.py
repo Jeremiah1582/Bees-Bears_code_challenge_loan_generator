@@ -14,17 +14,31 @@ class CustomerViewSet(viewsets.ModelViewSet):
     Provides standard CRUD operations.
     """
     serializer_class = CustomerSerializer
-    queryset = Customer.objects.all()# show all customers
+    queryset = Customer.objects.all()
 
-    @action(detail=True, methods=['get'], url_path='loanoffers')
+    @action(detail=True, methods=['get', 'post'], url_path='loanoffers')
     def get_loan_offers(self, request, pk=None):
         """
-        Get al loan offers for a specific customer.
-        Endpoint: GET /customers/{id}/loanoffers
+        Get all loan offers for a customer (GET) or create a new loan offer (POST).
+        Endpoint: GET/POST /customers/{id}/loanoffers
         """
         customer = self.get_object()
-        loans = Loan.objects.filter(customer=customer)
-        serializer = LoanSerializer(loans, many=True)
-        return Response(serializer.data)
-
-    
+        
+        if request.method == 'GET':
+            loans = Loan.objects.filter(customer=customer)
+            serializer = LoanSerializer(loans, many=True)
+            return Response(serializer.data)
+        
+        elif request.method == 'POST':
+            # Handle loan data - extract from nested 'loanData' if present, otherwise use request.data directly
+            loan_data = request.data.get('loanData', request.data).copy()
+            loan_data['customer'] = customer.id
+            
+            serializer = LoanSerializer(data=loan_data)
+            if serializer.is_valid():
+                loan = serializer.save()
+                return Response(
+                    LoanSerializer(loan).data,
+                    status=status.HTTP_201_CREATED
+                )
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
