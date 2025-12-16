@@ -7,10 +7,10 @@ class Customer(models.Model):
     email = models.EmailField(unique=True)
     income=models.DecimalField(max_digits=10,decimal_places=2)# monthly Income
     credit_score = models.PositiveIntegerField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     address = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
    #try using ManyToManyField(Loan)
 

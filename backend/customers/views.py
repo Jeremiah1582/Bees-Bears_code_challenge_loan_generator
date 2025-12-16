@@ -26,3 +26,5 @@ class CustomerViewSet(viewsets.ModelViewSet):
         loans = Loan.objects.filter(customer=customer)
         serializer = LoanSerializer(loans, many=True)
         return Response(serializer.data)
+
+    

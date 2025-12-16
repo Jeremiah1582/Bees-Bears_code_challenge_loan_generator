@@ -24,7 +24,7 @@ class CustomerSerializer(serializers.ModelSerializer):
             "created_at", 
             "updated_at"
         ]
-        read_only_fields = ("id", "created_at", "updated_at", "full_name", "annual_income", "max_loan_amount")
+        read_only_fields = ("id", "created_at", "updated_at", "full_name", "max_loan_amount")
 
     def validate_email(self, value):
         """Ensure email is lowercase for consistency"""
