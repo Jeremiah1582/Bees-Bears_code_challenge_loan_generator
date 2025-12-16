@@ -44,4 +44,4 @@ USER django-user
 # The development server is suitable for local coding/debugging.
 # python manage.py migrate --noinput: Runs migrations non-interactively.
 # python manage.py runserver 0.0.0.0:8000: Starts the server accessible from outside the container.
-CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"]
+CMD ["sh", "-c", "mkdir -p /app/data && python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"]
