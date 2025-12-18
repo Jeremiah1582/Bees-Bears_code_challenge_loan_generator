@@ -27,8 +27,11 @@ This README.md file was AI generated.
 
 This application allows solar panel installers (partners) to:
 - Create and manage customers
+- Create and manage partners --(not fully implemented)
 - Generate loan offers for customers
-- View calculated monthly payments in real-time
+- Full CRUD operations --(not fully implemented)
+- View calculated monthly payments in real-time --(not fully implemented)
+- view each customers loan offers
 - Manage all operations through a simple web interface
 
 ## Tech Stack
@@ -36,7 +39,7 @@ This application allows solar panel installers (partners) to:
 ### Backend
 - **Framework:** Django 6.0
 - **API:** Django REST Framework
-- **Database:** SQLite (development) / PostgreSQL (production ready)
+- **Database:** SQLite (development)
 - **Language:** Python 3.13
 
 ### Frontend
