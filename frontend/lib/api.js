@@ -1,5 +1,6 @@
 import axios from 'axios';
-const API_BASE_URL = 'http://localhost:8000/api';
+
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8000/api";
 
 // get all partners
 export async function fetchPartners() {
@@ -37,10 +38,10 @@ export async function createLoanOffer(customerId,loanData) {
   const response = await axios.post(`${API_BASE_URL}/customers/${customerId}/loanoffers/`, {
     loanData
   });
+  console.log("create loan offer response............", response);
   if (response.status !== 201) {
     throw new Error('Failed to create loan offer');
   }
-  console.log("create loan offer response.data............", response.data);
   return response.data.loanData;
 }
 
@@ -50,5 +51,6 @@ export async function fetchCustomerLoanOffers(customerId) {
   if (response.status !== 200) {
     throw new Error('Failed to fetch loan offers');
   }
-  return response.data.loanData;
+  return response.data||[];
 }
+
